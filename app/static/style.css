@@ -1,0 +1,37 @@
+:root {
+  --bg: #f6f7f9; --card: #ffffff; --text: #1f2933; --muted: #6b7785;
+  --accent: #1a56db; --accent-dark: #1444b0; --border: #dde1e6;
+  --error-bg: #fdecec; --error: #a61b1b; --info-bg: #e8f0fe; --info: #1a3f99;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14181d; --card: #1d232a; --text: #e6e9ed; --muted: #9aa5b1;
+    --accent: #6ea0ff; --accent-dark: #8fb6ff; --border: #2f3943;
+    --error-bg: #3a1c1c; --error: #ffb4b4; --info-bg: #1c2a44; --info: #b9d0ff;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+       background: var(--bg); color: var(--text); line-height: 1.5; }
+.topbar { display: flex; justify-content: space-between; align-items: center;
+          padding: 0.75rem 1.5rem; background: var(--card); border-bottom: 1px solid var(--border); }
+.brand { font-weight: 700; font-size: 1.25rem; color: var(--accent); text-decoration: none; }
+nav a { margin-left: 1rem; color: var(--accent); text-decoration: none; }
+nav a:hover { color: var(--accent-dark); text-decoration: underline; }
+.who { color: var(--muted); font-size: 0.9rem; }
+.container { max-width: 880px; margin: 2rem auto; padding: 0 1rem; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; margin-bottom: 1rem; }
+.card h2, .card h3 { margin-top: 0; }
+.muted { color: var(--muted); }
+.flash { padding: 0.75rem 1rem; border-radius: 6px; margin-bottom: 1rem; }
+.flash.error { background: var(--error-bg); color: var(--error); }
+.flash.info { background: var(--info-bg); color: var(--info); }
+form label { display: block; margin: 0.75rem 0 0.25rem; font-weight: 600; }
+form input[type=text], form input[type=email], form input[type=password], form textarea {
+  width: 100%; padding: 0.55rem; border: 1px solid var(--border); border-radius: 6px;
+  background: var(--bg); color: var(--text); font: inherit; }
+button, .button { margin-top: 1rem; padding: 0.55rem 1.1rem; border: 0; border-radius: 6px;
+  background: var(--accent); color: #fff; font: inherit; cursor: pointer; text-decoration: none; display: inline-block; }
+button:hover, .button:hover { background: var(--accent-dark); }
+table { width: 100%; border-collapse: collapse; }
+th, td { text-align: left; padding: 0.6rem 0.5rem; border-bottom: 1px solid var(--border); }
