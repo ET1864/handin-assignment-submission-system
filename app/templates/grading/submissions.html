@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Submissions for Assignment</h2>
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Student Name</th>
+                <th>Submitted Date</th>
+                <th>Status</th>
+                <th>Grade</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Sample Student</td>
+                <td>2026-11-04 10:00</td>
+                <td><span class="badge status-submitted">Submitted</span></td>
+                <td>-- / 100</td>
+                <td><a href="#" class="btn btn-sm">View & Grade</a></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endblock %}

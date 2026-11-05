@@ -1,9 +1,13 @@
-"""Viewing and grading a single submission. OWNER: Elvis.
+"""Viewing and grading a single submission. OWNER: Elvis"""
 
-Use @role_required("lecturer") and the pattern in student.py.
-"""
-from flask import Blueprint
+from flask import Blueprint, render_template
+from app.auth_utils import login_required, role_required
 
 bp = Blueprint("grading", __name__, url_prefix="/grading")
 
-# TODO (Elvis): add routes here.
+
+@bp.route("/assignment/<int:assignment_id>/submissions")
+@login_required
+@role_required("lecturer")
+def submissions(assignment_id):
+    return render_template("grading/submissions.html")
