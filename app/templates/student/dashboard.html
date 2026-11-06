@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}My classes - HandIn{% endblock %}
+{% block content %}
+<h2>My classes</h2>
+{% if courses %}
+  {% for course in courses %}
+    <div class="card">
+      <h3>{{ course['code'] }}: {{ course['title'] }}</h3>
+      <p class="muted">Lecturer: {{ course['lecturer'] }}</p>
+      {# TODO (Ted): link to the class page showing pending work #}
+    </div>
+  {% endfor %}
+{% else %}
+  <p class="muted">You are not enrolled in any classes yet.</p>
+{% endif %}
+{% endblock %}
