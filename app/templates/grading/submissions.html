@@ -1,28 +1,64 @@
 {% extends "base.html" %}
 
+{% block title %}Submissions - HandIn{% endblock %}
+
 {% block content %}
-<div class="container">
-    <h2>Submissions for Assignment</h2>
-    
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Student Name</th>
-                <th>Submitted Date</th>
-                <th>Status</th>
-                <th>Grade</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Sample Student</td>
-                <td>2026-11-04 10:00</td>
-                <td><span class="badge status-submitted">Submitted</span></td>
-                <td>-- / 100</td>
-                <td><a href="#" class="btn btn-sm">View & Grade</a></td>
-            </tr>
-        </tbody>
-    </table>
+<div class="container mt-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('lecturer.dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Submissions</li>
+        </ol>
+    </nav>
+
+    <h2>Submissions for {{ assignment.title if assignment else "Assignment" }}</h2>
+    <hr>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Registration No</th>
+                    <th>Student Name</th>
+                    <th>Submitted At</th>
+                    <th>Status</th>
+                    <th>Grade</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in submissions %}
+                <tr>
+                    <td>{{ student.student_reg }}</td>
+                    <td>{{ student.student_name }}</td>
+                    <td>{{ student.submitted_at if student.submitted_at else "Not Submitted" }}</td>
+                    <td>
+                        {% if student.submitted_at %}
+                            <span class="badge bg-success">Submitted</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Pending</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{ student.grade if student.grade is not none else "-" }}
+                    </td>
+                    <td>
+                        {% if student.submission_id %}
+                            <a href="{{ url_for('grading.grade_submission', submission_id=student.submission_id) }}" class="btn btn-sm btn-primary">
+                                {{ 'Edit Grade' if student.grade is not none else 'Grade' }}
+                            </a>
+                        {% else %}
+                            <button class="btn btn-sm btn-outline-secondary" disabled>No Submission</button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" class="text-center">No enrolled students found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock %}
