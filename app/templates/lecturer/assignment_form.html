@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Create assignment - HandIn{% endblock %}
+{% block content %}
+<h1>Create assignment</h1>
+<p class="muted">Choose one of your courses and set the deadline for student submissions.</p>
+
+{% if courses %}
+  <div class="card">
+    <form method="post">
+      <label for="course_id">Course</label>
+      <select id="course_id" name="course_id" required>
+        <option value="" disabled {% if not form.get('course_id') %}selected{% endif %}>Choose a course</option>
+        {% for course in courses %}
+          <option value="{{ course['id'] }}" {% if form.get('course_id')|int == course['id'] %}selected{% endif %}>
+            {{ course['code'] }}: {{ course['title'] }}
+          </option>
+        {% endfor %}
+      </select>
+
+      <label for="title">Assignment title</label>
+      <input id="title" name="title" type="text" maxlength="160" required value="{{ form.get('title', '') }}">
+
+      <label for="description">Instructions</label>
+      <textarea id="description" name="description" rows="5">{{ form.get('description', '') }}</textarea>
+
+      <label for="deadline">Deadline</label>
+      <input id="deadline" name="deadline" type="datetime-local" required value="{{ form.get('deadline', '') }}">
+
+      <button type="submit">Create assignment</button>
+      <a href="{{ url_for('lecturer.dashboard') }}">Cancel</a>
+    </form>
+  </div>
+{% else %}
+  <div class="card">
+    <p>You do not have any courses assigned, so you cannot create an assignment yet.</p>
+    <a href="{{ url_for('lecturer.dashboard') }}">Return to the lecturer dashboard</a>
+  </div>
+{% endif %}
+{% endblock %}

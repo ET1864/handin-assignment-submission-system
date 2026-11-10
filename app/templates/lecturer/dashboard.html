@@ -1,9 +1,57 @@
 {% extends "base.html" %}
-{% block title %}My classes - HandIn{% endblock %}
+{% block title %}Lecturer dashboard - HandIn{% endblock %}
 {% block content %}
-<h2>My classes</h2>
-<div class="card">
-  <p class="muted">Lecturer dashboard is coming soon.</p>
-  {# TODO (Lewis): show the courses this lecturer teaches, like student/dashboard.html #}
-</div>
+<h1>Lecturer dashboard</h1>
+<p class="muted">Manage your courses and keep track of assignment submissions.</p>
+<p><a class="button" href="{{ url_for('lecturer.create_assignment') }}">Create assignment</a></p>
+
+<section aria-labelledby="courses-heading">
+  <h2 id="courses-heading">My courses</h2>
+  {% if courses %}
+    {% for course in courses %}
+      <article class="card">
+        <h3>{{ course['code'] }}: {{ course['title'] }}</h3>
+        <p class="muted">{{ course['assignment_count'] }} assignment{% if course['assignment_count'] != 1 %}s{% endif %}</p>
+      </article>
+    {% endfor %}
+  {% else %}
+    <div class="card">
+      <p>You do not have any courses assigned yet.</p>
+    </div>
+  {% endif %}
+</section>
+
+<section aria-labelledby="assignments-heading">
+  <h2 id="assignments-heading">Assignments</h2>
+  {% if assignments %}
+    <div class="card" style="overflow-x: auto;">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Assignment</th>
+            <th scope="col">Course</th>
+            <th scope="col">Deadline</th>
+            <th scope="col">Submissions</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for assignment in assignments %}
+            <tr>
+              <td>{{ assignment['title'] }}</td>
+              <td>{{ assignment['course_code'] }}</td>
+              <td>{{ assignment['deadline'] }}</td>
+              <td>{{ assignment['submission_count'] }} submitted, {{ assignment['graded_count'] }} graded</td>
+              <td><a href="{{ url_for('lecturer.assignment_submissions', assignment_id=assignment['id']) }}">View students</a></td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="card">
+      <p>No assignments yet. Create one to get started.</p>
+    </div>
+  {% endif %}
+</section>
 {% endblock %}
