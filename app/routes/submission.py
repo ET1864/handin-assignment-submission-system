@@ -1,10 +1,13 @@
-"""Student submission pages. OWNER: Ted.
+"""Student submission pages. OWNER: Ted."""
+from flask import Blueprint, render_template
 
-Planned: class page with pending work, submit assignment, submission status.
-Use @role_required("student") and the pattern in student.py.
-"""
-from flask import Blueprint
+from ..auth_utils import role_required
 
 bp = Blueprint("submission", __name__, url_prefix="/submissions")
 
-# TODO (Ted): add routes here.
+
+@bp.route("/class/<int:course_id>")
+@role_required("student")
+def class_page(course_id):
+    # Static layout only for now. No database query yet.
+    return render_template("student/class.html")

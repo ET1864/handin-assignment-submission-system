@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Class page - HandIn{% endblock %}
+{% block content %}
+<p><a href="{{ url_for('student.dashboard') }}">&larr; My classes</a></p>
+<h2>CS101: Intro to Programming</h2>
+
+<div class="tabs">
+  <button type="button" class="tab active" data-tab="pending">Pending (2)</button>
+  <button type="button" class="tab" data-tab="submitted">Submitted (1)</button>
+</div>
+
+<section id="pending" class="tab-panel">
+  <div class="card">
+    <h3>Lab 1</h3>
+    <p class="muted">Due 2026-11-12 23:59</p>
+  </div>
+  <div class="card">
+    <h3>Project Proposal</h3>
+    <p class="muted">Due 2026-11-01 23:59 <span class="badge overdue">Overdue</span></p>
+  </div>
+</section>
+
+<section id="submitted" class="tab-panel" hidden>
+  <div class="card">
+    <h3>Quiz 1</h3>
+    <p class="muted">Submitted 2026-10-28 14:30 &middot; Not graded yet</p>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll(".tab").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      document.querySelectorAll(".tab").forEach(function (b) { b.classList.remove("active"); });
+      document.querySelectorAll(".tab-panel").forEach(function (p) { p.hidden = true; });
+      btn.classList.add("active");
+      document.getElementById(btn.dataset.tab).hidden = false;
+    });
+  });
+</script>
+{% endblock %}
