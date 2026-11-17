@@ -13,8 +13,11 @@
   {% for a in pending %}
     <div class="card">
       <h3>{{ a['title'] }}</h3>
-      <p class="muted">Due {{ a['deadline'] }}</p>
+            <p class="muted">Due {{ a['deadline'] }}
+        {% if a['deadline'] < now %}<span class="badge overdue">Overdue</span>{% endif %}</p>
     </div>
+  {% else %}
+    <p class="muted">Nothing pending. You are all caught up.</p>
   {% endfor %}
 </section>
 
@@ -22,8 +25,12 @@
   {% for a in submitted %}
     <div class="card">
       <h3>{{ a['title'] }}</h3>
-      <p class="muted">Submitted {{ a['submitted_at'] }}</p>
+           <p class="muted">Submitted {{ a['submitted_at'] }}
+        {% if a['grade'] is not none %} &middot; Grade: {{ a['grade'] }}/100
+        {% else %} &middot; Not graded yet{% endif %}</p>
     </div>
+  {% else %}
+    <p class="muted">You have not submitted anything in this class yet.</p>
   {% endfor %}
 </section>
 
