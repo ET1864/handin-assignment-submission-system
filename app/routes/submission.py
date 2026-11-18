@@ -1,7 +1,10 @@
 """Student submission pages. OWNER: Ted."""
+import os
 from datetime import datetime
 
-from flask import Blueprint, abort, g, render_template
+from flask import (Blueprint, abort, current_app, flash, g, redirect,
+                   render_template, request, send_from_directory, url_for)
+from werkzeug.utils import secure_filename
 
 from ..auth_utils import role_required
 from ..db import get_db
@@ -46,7 +49,9 @@ def class_page(course_id):
     submitted = [r for r in rows if r["submitted_at"] is not None]
     return render_template("student/class.html", course=course,
                            pending=pending, submitted=submitted, now=now)
-@bp.route("/assignment/<int:assignment_id>")
+
+
+@bp.route("/assignment/<int:assignment_id>", methods=["GET", "POST"])
 @role_required("student")
 def assignment_page(assignment_id):
     db = get_db()
@@ -67,5 +72,36 @@ def assignment_page(assignment_id):
         abort(404)
 
     now = datetime.now().strftime("%Y-%m-%d %H:%M")
-    return render_template("student/assignment.html",
-                           assignment=assignment, now=now)
+
+    # This student's submission for this assignment, if there is one.
+    submission = db.execute(
+        "SELECT id, file_path, submitted_at FROM submissions "
+        "WHERE assignment_id = ? AND student_id = ?",
+        (assignment_id, g.user["id"]),
+    ).fetchone()
+
+    if request.method == "POST":
+        file = request.files.get("submission_file")
+        if submission is not None:
+            flash("You have already submitted this assignment.", "error")
+        elif assignment["deadline"] < now:
+            flash("The deadline has passed, so submissions are closed.", "error")
+        elif file is None or file.filename == "":
+            flash("Please choose a file to upload.", "error")
+        else:
+            # Save the file, then record who submitted it and when.
+            filename = f"{g.user['id']}_{assignment_id}_{secure_filename(file.filename)}"
+            os.makedirs(current_app.config["UPLOAD_FOLDER"], exist_ok=True)
+            file.save(os.path.join(current_app.config["UPLOAD_FOLDER"], filename))
+            db.execute(
+                "INSERT INTO submissions (assignment_id, student_id, file_path, submitted_at) "
+                "VALUES (?, ?, ?, ?)",
+                (assignment_id, g.user["id"], filename, now),
+            )
+            db.commit()
+            flash("Submission successful.", "success")
+        return redirect(url_for("submission.assignment_page",
+                                assignment_id=assignment_id))
+
+    return render_template("student/assignment.html", assignment=assignment,
+                           submission=submission, now=now)
