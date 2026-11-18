@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}{{ assignment['title'] }} - HandIn{% endblock %}
+{% block content %}
+<p><a href="{{ url_for('submission.class_page', course_id=assignment['course_id']) }}">&larr; Back to {{ assignment['code'] }}</a></p>
+<h2>{{ assignment['title'] }}</h2>
+<p class="muted">Due {{ assignment['deadline'] }}
+  {% if assignment['deadline'] < now %}<span class="badge overdue">Closed</span>{% endif %}</p>
+
+<div class="card">
+  <h3>Instructions</h3>
+  <p>{{ assignment['description'] }}</p>
+</div>
+
+<div class="card">
+  <h3>Your submission</h3>
+  <form method="post" enctype="multipart/form-data">
+    <input type="file" name="submission_file" required>
+    <button type="submit">Submit</button>
+  </form>
+</div>
+{% endblock %}

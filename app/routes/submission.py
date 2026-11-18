@@ -46,3 +46,26 @@ def class_page(course_id):
     submitted = [r for r in rows if r["submitted_at"] is not None]
     return render_template("student/class.html", course=course,
                            pending=pending, submitted=submitted, now=now)
+@bp.route("/assignment/<int:assignment_id>")
+@role_required("student")
+def assignment_page(assignment_id):
+    db = get_db()
+
+    # Fetch the assignment only if the student is enrolled in its course.
+    assignment = db.execute(
+        """
+        SELECT a.id, a.title, a.description, a.deadline,
+               c.id AS course_id, c.code
+        FROM assignments a
+        JOIN courses c ON c.id = a.course_id
+        JOIN enrollments e ON e.course_id = c.id
+        WHERE a.id = ? AND e.student_id = ?
+        """,
+        (assignment_id, g.user["id"]),
+    ).fetchone()
+    if assignment is None:
+        abort(404)
+
+    now = datetime.now().strftime("%Y-%m-%d %H:%M")
+    return render_template("student/assignment.html",
+                           assignment=assignment, now=now)
