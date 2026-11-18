@@ -13,9 +13,18 @@
 
 <div class="card">
   <h3>Your submission</h3>
-  <form method="post" enctype="multipart/form-data">
-    <input type="file" name="submission_file" required>
-    <button type="submit">Submit</button>
-  </form>
+  {% if submission %}
+    <p>Submitted {{ submission['submitted_at'] }}</p>
+    {% if submission['file_path'] %}
+      <p>File: <a href="{{ url_for('submission.download_file', submission_id=submission['id']) }}">{{ submission['file_path'].split('_', 2)[-1] }}</a></p>
+    {% endif %}
+  {% elif assignment['deadline'] < now %}
+    <p class="muted">Submissions for this assignment are closed.</p>
+  {% else %}
+    <form method="post" enctype="multipart/form-data">
+      <input type="file" name="submission_file" required>
+      <button type="submit">Submit</button>
+    </form>
+  {% endif %}
 </div>
 {% endblock %}

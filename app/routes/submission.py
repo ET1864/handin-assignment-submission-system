@@ -105,3 +105,16 @@ def assignment_page(assignment_id):
 
     return render_template("student/assignment.html", assignment=assignment,
                            submission=submission, now=now)
+
+@bp.route("/file/<int:submission_id>")
+@role_required("student")
+def download_file(submission_id):
+    # Students can only download their own submitted files.
+    row = get_db().execute(
+        "SELECT file_path FROM submissions WHERE id = ? AND student_id = ?",
+        (submission_id, g.user["id"]),
+    ).fetchone()
+    if row is None or not row["file_path"]:
+        abort(404)
+    return send_from_directory(current_app.config["UPLOAD_FOLDER"],
+                               row["file_path"], as_attachment=True)
