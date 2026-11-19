@@ -92,7 +92,7 @@ def assignment_page(assignment_id):
             # Save the file, then record who submitted it and when.
             filename = f"{g.user['id']}_{assignment_id}_{secure_filename(file.filename)}"
             os.makedirs(current_app.config["UPLOAD_FOLDER"], exist_ok=True)
-            file.save(os.path.join(current_app.config["UPLOAD_FOLDER"], filename))
+            file.sav(os.path.join(current_app.config["UPLOAD_FOLDER"], filename))
             db.execute(
                 "INSERT INTO submissions (assignment_id, student_id, file_path, submitted_at) "
                 "VALUES (?, ?, ?, ?)",
