@@ -7,7 +7,7 @@
     <div class="card">
       <h3>{{ course['code'] }}: {{ course['title'] }}</h3>
       <p class="muted">Lecturer: {{ course['lecturer'] }}</p>
-      {# TODO (Ted): link to the class page showing pending work #}
+      <a class="button" href="{{ url_for('submission.class_page', course_id=course['id']) }}">Open class</a>
     </div>
   {% endfor %}
 {% else %}
