@@ -50,7 +50,12 @@ def class_page(course_id):
     return render_template("student/class.html", course=course,
                            pending=pending, submitted=submitted, now=now)
 
-
+def save_upload(file, assignment_id):
+    """Save an uploaded file and return the name it was stored under."""
+    filename = f"{g.user['id']}_{assignment_id}_{secure_filename(file.filename)}"
+    os.makedirs(current_app.config["UPLOAD_FOLDER"], exist_ok=True)
+    file.save(os.path.join(current_app.config["UPLOAD_FOLDER"], filename))
+    return filename
 @bp.route("/assignment/<int:assignment_id>", methods=["GET", "POST"])
 @role_required("student")
 def assignment_page(assignment_id):
@@ -82,17 +87,26 @@ def assignment_page(assignment_id):
 
     if request.method == "POST":
         file = request.files.get("submission_file")
-        if submission is not None:
-            flash("You have already submitted this assignment.", "error")
+        if file is None or file.filename == "":
+            flash("Please choose a file to upload.", "error")
         elif assignment["deadline"] < now:
             flash("The deadline has passed, so submissions are closed.", "error")
-        elif file is None or file.filename == "":
-            flash("Please choose a file to upload.", "error")
+        elif submission is not None:
+            # Replace the existing submission with the new file.
+            old_file = submission["file_path"]
+            filename = save_upload(file, assignment_id)
+            db.execute(
+                "UPDATE submissions SET file_path = ?, submitted_at = ? WHERE id = ?",
+                (filename, now, submission["id"]),
+            )
+            db.commit()
+            if old_file and old_file != filename:
+                old_path = os.path.join(current_app.config["UPLOAD_FOLDER"], old_file)
+                if os.path.exists(old_path):
+                    os.remove(old_path)
+            flash("Submission replaced.", "success")
         else:
-            # Save the file, then record who submitted it and when.
-            filename = f"{g.user['id']}_{assignment_id}_{secure_filename(file.filename)}"
-            os.makedirs(current_app.config["UPLOAD_FOLDER"], exist_ok=True)
-            file.save(os.path.join(current_app.config["UPLOAD_FOLDER"], filename))
+            filename = save_upload(file, assignment_id)
             db.execute(
                 "INSERT INTO submissions (assignment_id, student_id, file_path, submitted_at) "
                 "VALUES (?, ?, ?, ?)",

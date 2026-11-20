@@ -18,6 +18,15 @@
     {% if submission['file_path'] %}
       <p>File: <a href="{{ url_for('submission.download_file', submission_id=submission['id']) }}">{{ submission['file_path'].split('_', 2)[-1] }}</a></p>
     {% endif %}
+    {% if assignment['deadline'] < now %}
+      <p class="muted">The deadline has passed, so this submission can no longer be changed.</p>
+    {% else %}
+      <form method="post" enctype="multipart/form-data">
+        <p class="muted">You can replace your submission until the deadline.</p>
+        <input type="file" name="submission_file" required>
+        <button type="submit">Replace submission</button>
+      </form>
+    {% endif %}
   {% elif assignment['deadline'] < now %}
     <p class="muted">Submissions for this assignment are closed.</p>
   {% else %}
