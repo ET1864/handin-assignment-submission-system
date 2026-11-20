@@ -89,6 +89,8 @@ def assignment_page(assignment_id):
         file = request.files.get("submission_file")
         if file is None or file.filename == "":
             flash("Please choose a file to upload.", "error")
+        elif assignment["deadline"] < now:
+            flash("The deadline has passed, so submissions are closed.", "error")
         elif submission is not None:
             # Replace the existing submission with the new file.
             old_file = submission["file_path"]
@@ -103,8 +105,6 @@ def assignment_page(assignment_id):
                 if os.path.exists(old_path):
                     os.remove(old_path)
             flash("Submission replaced.", "success")
-        elif assignment["deadline"] < now:
-            flash("The deadline has passed, so submissions are closed.", "error")
         else:
             filename = save_upload(file, assignment_id)
             db.execute(
