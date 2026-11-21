@@ -7,7 +7,7 @@ from app.auth_utils import login_required, role_required
 bp = Blueprint("grading", __name__, url_prefix="/grading")
 
 
-@bp.route("/assignment/<int:assignment_id>/submissions")
+@bp.route("/assignment/<int:assignment_id>")
 @login_required
 @role_required("lecturer")
 def submissions(assignment_id):
@@ -38,7 +38,7 @@ def submissions(assignment_id):
     )
 
 
-@bp.route('/submission/<int:submission_id>/grade', methods=['GET', 'POST'])
+@bp.route('/submission/<int:submission_id>', methods=['GET', 'POST'])
 @login_required
 @role_required("lecturer")
 def grade_submission(submission_id):
