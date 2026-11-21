@@ -7,7 +7,7 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ url_for('lecturer.dashboard') }}">Dashboard</a></li>
-            <li class="breadcrumb-item"><a href="{{ url_for('grading.submissions_list', assignment_id=submission.assignment_id) }}">Submissions</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('grading.submissions', assignment_id=submission.assignment_id) }}">Submissions</a></li>
             <li class="breadcrumb-item active" aria-current="page">Grade Submission</li>
         </ol>
     </nav>
