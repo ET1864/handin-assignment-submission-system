@@ -11,6 +11,7 @@ CREATE TABLE users (
     id            INTEGER PRIMARY KEY AUTOINCREMENT,
     name          TEXT NOT NULL,
     email         TEXT NOT NULL UNIQUE,
+    reg_no        TEXT,                             -- student registration number (NULL for lecturers)
     password_hash TEXT NOT NULL,
     role          TEXT NOT NULL CHECK (role IN ('student', 'lecturer'))
 );
@@ -19,6 +20,7 @@ CREATE TABLE courses (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,
     code        TEXT NOT NULL UNIQUE,
     title       TEXT NOT NULL,
+    semester    TEXT NOT NULL DEFAULT 'Fall Semester 2026',
     lecturer_id INTEGER NOT NULL REFERENCES users (id)
 );
 
@@ -42,7 +44,8 @@ CREATE TABLE submissions (
     assignment_id INTEGER NOT NULL REFERENCES assignments (id),
     student_id    INTEGER NOT NULL REFERENCES users (id),
     content       TEXT,                             -- typed answer
-    file_path     TEXT,                             -- optional uploaded file
+    file_path     TEXT,                             -- optional uploaded file (stored name)
+    original_filename TEXT,                         -- file name as the student uploaded it
     submitted_at  TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
     grade         INTEGER CHECK (grade BETWEEN 0 AND 100),
     feedback      TEXT,
