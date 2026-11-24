@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}{{ course['code'] }} - HandIn{% endblock %}
+{% block content %}
+<p><a href="{{ url_for('student.dashboard') }}">&larr; My classes</a></p>
+<h2>{{ course['code'] }}: {{ course['title'] }}</h2>
+
+<div class="tabs">
+<button type="button" class="tab active" data-tab="pending">Pending ({{ pending|length }})</button>
+<button type="button" class="tab" data-tab="submitted">Submitted ({{ submitted|length }})</button>
+</div>
+
+<section id="pending" class="tab-panel">
+  {% for a in pending %}
+    <div class="card">
+       <h3><a href="{{ url_for('submission.assignment_page', assignment_id=a['id']) }}">{{ a['title'] }}</a></h3>
+            <p class="muted">Due {{ a['deadline'] }}
+        {% if a['deadline'] < now %}<span class="badge overdue">Overdue</span>{% endif %}</p>
+    </div>
+  {% else %}
+    <p class="muted">Nothing pending. You are all caught up.</p>
+  {% endfor %}
+</section>
+
+<section id="submitted" class="tab-panel" hidden>
+  {% for a in submitted %}
+    <div class="card">
+       <h3><a href="{{ url_for('submission.assignment_page', assignment_id=a['id']) }}">{{ a['title'] }}</a></h3>
+           <p class="muted">Submitted {{ a['submitted_at'] }}
+        {% if a['grade'] is not none %} &middot; Grade: {{ a['grade'] }}/100
+        {% else %} &middot; Not graded yet{% endif %}</p>
+    </div>
+  {% else %}
+    <p class="muted">You have not submitted anything in this class yet.</p>
+  {% endfor %}
+</section>
+
+<script>
+  document.querySelectorAll(".tab").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      document.querySelectorAll(".tab").forEach(function (b) { b.classList.remove("active"); });
+      document.querySelectorAll(".tab-panel").forEach(function (p) { p.hidden = true; });
+      btn.classList.add("active");
+      document.getElementById(btn.dataset.tab).hidden = false;
+    });
+  });
+</script>
+{% endblock %}
+
