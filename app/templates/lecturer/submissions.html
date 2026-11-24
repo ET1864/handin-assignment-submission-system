@@ -41,8 +41,12 @@
               {% if student['grade'] is not none %}
                 {{ student['grade'] }}/100
                 {% if student['feedback'] %}<br>{{ student['feedback'] }}{% endif %}
+                {% if student['submission_id'] %}
+                  <br><a href="{{ url_for('grading.grade_submission', submission_id=student['submission_id']) }}">Edit grade</a>
+                {% endif %}
               {% elif student['submission_id'] %}
-                Awaiting grade
+                Awaiting grade —
+                <a href="{{ url_for('grading.grade_submission', submission_id=student['submission_id']) }}">Grade</a>
               {% else %}
                 —
               {% endif %}

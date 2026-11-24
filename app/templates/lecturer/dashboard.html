@@ -42,7 +42,9 @@
               <td>{{ assignment['course_code'] }}</td>
               <td>{{ assignment['deadline'] }}</td>
               <td>{{ assignment['submission_count'] }} submitted, {{ assignment['graded_count'] }} graded</td>
-              <td><a href="{{ url_for('lecturer.assignment_submissions', assignment_id=assignment['id']) }}">View students</a></td>
+              <td>
+                <a href="{{ url_for('grading.submissions', assignment_id=assignment['id']) }}">View submissions</a>
+              </td>
             </tr>
           {% endfor %}
         </tbody>
