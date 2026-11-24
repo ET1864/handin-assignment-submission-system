@@ -3,7 +3,10 @@
 {% block content %}
 <h1>Lecturer dashboard</h1>
 <p class="muted">Manage your courses and keep track of assignment submissions.</p>
-<p><a class="button" href="{{ url_for('lecturer.create_assignment') }}">Create assignment</a></p>
+<p>
+  <a class="button" href="{{ url_for('lecturer.create_assignment') }}">Create assignment</a>
+  <a href="{{ url_for('lecturer.dashboard') }}" style="margin-left:1rem;">&larr; Back to classes</a>
+</p>
 
 <section aria-labelledby="courses-heading">
   <h2 id="courses-heading">My courses</h2>
